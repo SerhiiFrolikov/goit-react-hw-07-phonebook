@@ -1,7 +1,6 @@
-import { nanoid } from '@reduxjs/toolkit';
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact, getContactsNames } from 'redux/contactsSlice';
+import { getContactsNames } from 'redux/contactsSlice';
+import { addContact } from 'redux/operations';
 import {
   Form,
   AddContactBtn,
@@ -12,28 +11,26 @@ import {
 export const ContactForm = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(getContactsNames);
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const newContact = { name: '', phone: '' };
 
   const onChange = e => {
     const { name, value } = e.target;
-    if (name === 'name') setName(value);
-    if (name === 'number') setNumber(value);
+    if (name === 'name') newContact.name = value;
+    if (name === 'number') newContact.phone = value;
   };
 
   const addContacts = e => {
     e.preventDefault();
     const addedName = contacts.some(
-      contact => contact.name.toLowerCase() === name.toLowerCase()
+      contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
     );
     if (addedName) {
-      return alert(`${name} is already in contacts`);
+      return alert(`${newContact.name} is already in contacts`);
     }
 
-    const id = nanoid(10);
-    dispatch(addContact({ id, name, number }));
-    setName('');
-    setNumber('');
+    dispatch(addContact(newContact));
+    newContact.name = '';
+    newContact.phone = null;
   };
 
   return (
@@ -47,7 +44,7 @@ export const ContactForm = () => {
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
           placeholder="Serhii"
           onChange={onChange}
-          value={name}
+          value={newContact.name.value}
           required
         />
       </FormLabel>
@@ -60,7 +57,7 @@ export const ContactForm = () => {
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           placeholder="000 000 00 00"
           onChange={onChange}
-          value={number}
+          value={newContact.phone.value}
           required
         />
       </FormLabel>
