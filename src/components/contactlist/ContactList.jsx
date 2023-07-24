@@ -25,6 +25,15 @@ export const ContactList = () => {
     contact.name.toLowerCase().includes(queryFilter.toLowerCase())
   );
 
+  const handleDeleteContact = async id => {
+    try {
+      await dispatch(deleteContact(id));
+      dispatch(fetchContacts());
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <List>
       {filteredContacts.map(({ name, id, phone }) => {
@@ -33,7 +42,7 @@ export const ContactList = () => {
             <Name>
               {name}: <PhoneNumber>{phone}</PhoneNumber>
             </Name>
-            <DeleteBtn id={id} onClick={() => dispatch(deleteContact(id))}>
+            <DeleteBtn id={id} onClick={() => handleDeleteContact(id)}>
               Delete
             </DeleteBtn>
           </ListItem>
