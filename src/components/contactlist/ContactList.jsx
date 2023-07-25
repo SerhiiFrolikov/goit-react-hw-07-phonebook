@@ -26,12 +26,7 @@ export const ContactList = () => {
   );
 
   const handleDeleteContact = async id => {
-    try {
-      await dispatch(deleteContact(id));
-      dispatch(fetchContacts());
-    } catch (e) {
-      console.log(e);
-    }
+    await dispatch(deleteContact(id)).unwrap();
   };
 
   return (

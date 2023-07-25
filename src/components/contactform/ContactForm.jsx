@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getContactsNames } from 'redux/contactsSlice';
 import { addContact } from 'redux/operations';
@@ -11,27 +12,28 @@ import {
 export const ContactForm = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(getContactsNames);
-  const newContact = { name: '', phone: '' };
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
   const onChange = e => {
     const { name, value } = e.target;
-    if (name === 'name') newContact.name = value;
-    if (name === 'number') newContact.phone = value;
+    if (name === 'name') setName(value);
+    if (name === 'number') setNumber(value);
   };
 
   const addContacts = e => {
     e.preventDefault();
     const addedName = contacts.some(
-      contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
+      contact => contact.name.toLowerCase() === name.toLowerCase()
     );
     if (addedName) {
-      return alert(`${newContact.name} is already in contacts`);
+      return alert(`${name} is already in contacts`);
     }
 
+    const newContact = { name, phone: number };
     dispatch(addContact(newContact));
-    newContact.name = '';
-    newContact.phone = null;
-    e.target.reset();
+    setName('');
+    setNumber('');
   };
 
   return (
@@ -45,7 +47,7 @@ export const ContactForm = () => {
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
           placeholder="Serhii"
           onChange={onChange}
-          value={newContact.name.value}
+          value={name}
           required
         />
       </FormLabel>
@@ -58,7 +60,7 @@ export const ContactForm = () => {
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
           placeholder="000 000 00 00"
           onChange={onChange}
-          value={newContact.phone.value}
+          value={number}
           required
         />
       </FormLabel>
